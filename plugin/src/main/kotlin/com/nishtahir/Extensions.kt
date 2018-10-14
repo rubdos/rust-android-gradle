@@ -14,7 +14,10 @@ fun Project.getToolchainDirectory(): File {
     val globalDir: String? = System.getenv("ANDROID_NDK_TOOLCHAIN_DIR")
     if (globalDir == null) {
         val oldDefault = File(projectDir, ".cargo/toolchain")
-        throw GradleException("Must set ANDROID_NDK_TOOLCHAIN_DIR to use rust-android-gradle plugin (previously, defaulted to ${oldDefault.absolutePath}")
+        var defaultDir = File(System.getProperty("java.io.tmpdir"), "rust-android-ndk-toolchains")
+        println("Note: previously, toolchains defaulted to ${oldDefault.absolutePath}.")
+        println("Moved to ${defaultDir.absolutePath}, or override via the ANDROID_NDK_TOOLCHAIN_DIR environment variable.")
+        return defaultDir.absoluteFile
     }
     return File(globalDir).absoluteFile
 }
