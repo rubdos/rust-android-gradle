@@ -20,7 +20,6 @@ cargo {
     module = "../rust"
     targets = ["arm", "x86"]
 }
-
 ```
 
 Run the `cargoBuild` task to cross compile
@@ -29,7 +28,43 @@ Run the `cargoBuild` task to cross compile
 ./gradlew cargoBuild
 ```
 
-Generated static libraries will be added to your android `jniLibs` source-sets.
+## Additional options
+
+The `cargo` Gradle configuration accepts many more options.
+
+### Linking Java code to native libraries
+
+Generated static libraries will be added to your android `jniLibs` source-sets,
+when correctly referenced in the `cargo` configuration through the `libname` or `targetIncludes` options.
+The latter defaults to `["$libname.so", "$libname.dylib", "$libname.dll"]`,
+so the following configuration will include all `libbackend` libraries generated in the Rust project in `../rust`:
+
+```
+cargo {
+    module = "../rust"
+    libname = "libbackend"
+}
+```
+
+Now, Java code can call into the native code using e.g.
+
+```java
+static {
+    System.loadLibrary("backend");
+}
+```
+
+### Native `apiLevel`
+
+The [Android NDK](https://developer.android.com/ndk/guides/stable_apis)
+also knows an API level, which can be specified using the `apiLevel` option.
+This option defaults to the SDK API level.
+As of API level 21, 64 bit builds are possible
+
+### Cargo release profile
+
+The `profile` option selects between the `--debug` and `--release` profiles in `cargo`.
+*Defaults to `debug`!*
 
 # Development
 
