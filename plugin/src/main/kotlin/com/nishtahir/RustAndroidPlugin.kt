@@ -44,7 +44,11 @@ data class Toolchain(val platform: String,
                      val cc: String,
                      val ar: String,
                      val folder: String) {
-    fun cc(apiLevel: Int): String = "$platform-$apiLevel/$cc"
+    fun cc(apiLevel: Int) = if(System.getProperty("os.name").startsWith("Windows")) {
+			File("$platform-$apiLevel", "$cc.cmd")
+		} else {
+			File("$platform-$apiLevel", "$cc")
+		}
     fun ar(apiLevel: Int): String = "$platform-$apiLevel/$ar"
 }
 
